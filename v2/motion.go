@@ -6,6 +6,7 @@ import (
 	"image/color"
 	opencv "gocv.io/x/gocv"
 	mjpeg "github.com/0187773933/RaspiMotionAlarm/v2/mjpeg"
+	// twilio https://github.com/sfreiberg/gotwilio
 )
 
 // https://github.com/hybridgroup/gocv/tree/release/cmd
@@ -20,6 +21,18 @@ const ShowDisplay = true
 const MinimumArea = 1000
 const MinimumMotionCounterBeforeEvent = 25
 const MinimumEventsBeforeAlert = 3
+
+// func TwilioSendSMS( from_number string , to_number string , message string ) {
+// 	twilio := gotwilio.NewTwilioClient( "accountSid" , "authToken" )
+// 	twilio.SendSMS( from_number , to_number , message , "" , "" )
+// }
+
+// func TwilioCallNumber( from_number string , to_number string , call_handler_url string ) {
+// 	twilio := gotwilio.NewTwilioClient( "accountSid" , "authToken" )
+// 	twilio.SendSMS( from_number , to_number , message , "" , "" )
+// 	callback_params := gotwilio.NewCallbackParameters( call_handler_url )
+// 	twilio.CallWithUrlCallbacks( from_number , to_number , callback_params )
+// }
 
 func Alert() {
 	fmt.Println( "sending sms alert" )
