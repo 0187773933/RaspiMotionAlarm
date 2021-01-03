@@ -12,6 +12,11 @@ import (
 	motion "github.com/0187773933/RaspiMotionAlarm/v2"
 )
 
+// Switch to Fiber
+// https://docs.gofiber.io/api/middleware/basicauth
+// https://docs.gofiber.io/api/middleware#helmet
+// https://docs.gofiber.io/api/app#handler
+
 var stream *mjpeg.Stream
 
 // func Secret( user , realm string ) string {
@@ -48,6 +53,8 @@ func handle( w http.ResponseWriter , r *auth.AuthenticatedRequest ) {
 		time.Sleep( stream.FrameInterval )
 		b := <-c
 		_, err := w.Write( b )
+		// https://pkg.go.dev/github.com/gofiber/fiber/v2#Ctx.Write
+		// So what if this same "handle" function was our fiber route handler , and instead of the http.ResponseWriter , we use fiber.Ctx.Write()
 		if err != nil {
 			break
 		}
