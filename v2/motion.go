@@ -5,7 +5,7 @@ import (
 	"image"
 	"image/color"
 	opencv "gocv.io/x/gocv"
-	mjpeg "github.com/hybridgroup/mjpeg"
+	mjpeg "github.com/0187773933/RaspiMotionAlarm/v2/mjpeg"
 )
 
 // https://github.com/hybridgroup/gocv/tree/release/cmd
