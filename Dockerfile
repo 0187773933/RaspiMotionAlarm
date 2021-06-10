@@ -133,7 +133,7 @@ RUN cmake \
 #make -j $(nproc) && \
 RUN make
 RUN sudo make install
-RUN ldconfig
+RUN sudo ldconfig
 # # RUN rm /${OPENCV_VERSION}.zip
 # # RUN rm -r /opencv-${OPENCV_VERSION}
 
