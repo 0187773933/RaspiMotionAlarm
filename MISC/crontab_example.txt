@@ -1,0 +1,6 @@
+0 16   *   *   *    /sbin/shutdown -r
+31 22 * * * /usr/local/bin/restartMotionServerWithDelay
+01 10 * * * systemctl stop motion-script.service
+*/5 * * * * /bin/bash -l -c 'su pi -c "/usr/local/bin/chromecastDiscoveryPublicSync"' >/dev/null 2>&1
+@reboot /usr/local/bin/restartMotionServerWithDelay
+20 6 * * * /sbin/shutdown -r now

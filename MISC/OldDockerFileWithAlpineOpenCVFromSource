@@ -1,0 +1,154 @@
+FROM alpine:latest
+
+# You have to enable swap file for raspberry pi ubuntu server 64 bit
+# make sure you turn it off though after the build, as it will destroy the sd card's life span
+# https://stackoverflow.com/a/47374605
+# sudo dd if=/dev/zero of=/swapfile bs=64M count=16
+# sudo mkswap /swapfile
+# sudo chmod 600 /swapfile
+# sudo swapon /swapfile
+
+# sudo swapoff /swapfile
+# sudo rm /swapfile
+
+# https://github.com/denismakogon/gocv-alpine/blob/master/build-stage/Dockerfile
+# https://github.com/raspi-chromecast-box/USBGamepadWatcher
+
+ENV OPENCV_VERSION="4.5.0"
+#ENV OPENCV_VERSION="4.5.1"
+
+RUN apk update
+
+# Install Dependencies
+RUN apk add --no-cache ca-certificates
+RUN apk add --no-cache git
+RUN apk add --no-cache build-base
+RUN apk add --no-cache musl-dev
+RUN apk add --no-cache alpine-sdk
+RUN apk add --no-cache make
+RUN apk add --no-cache gcc
+RUN apk add --no-cache g++
+RUN apk add --no-cache libc-dev
+RUN apk add --no-cache linux-headers
+RUN apk add --no-cache libjpeg-turbo
+RUN apk add --no-cache libpng
+RUN apk add --no-cache libwebp
+RUN apk add --no-cache libwebp-dev
+RUN apk add --no-cache tiff
+RUN apk add --no-cache libavc1394
+# RUN apk add --no-cache jasper-libs # no arm support
+RUN apk add --no-cache openblas
+RUN apk add --no-cache libgphoto2
+RUN apk add --no-cache gstreamer
+RUN apk add --no-cache gst-plugins-base
+RUN apk add --no-cache openrc
+RUN apk add --no-cache python3
+RUN apk add --no-cache py3-pip
+RUN apk add --no-cache ffmpeg
+
+# Install Dev Package Dependencies
+RUN apk add --no-cache clang
+RUN apk add --no-cache cmake
+RUN apk add --no-cache clang-dev
+RUN apk add --no-cache pkgconf
+RUN apk add --no-cache openblas-dev
+RUN apk add --no-cache gstreamer-dev
+RUN apk add --no-cache gst-plugins-base-dev
+RUN apk add --no-cache libjpeg-turbo-dev
+RUN apk add --no-cache libpng-dev
+RUN apk add --no-cache tiff-dev
+# RUN apk add --no-cache jasper-dev  # no arm support
+RUN apk add --no-cache libavc1394-dev
+RUN apk add --no-cache python3-dev
+RUN apk add --no-cache ffmpeg-dev
+
+# Install Extras
+RUN apk --no-cache add nano
+RUN apk --no-cache add tar
+RUN apk --no-cache add bash
+RUN pip3 install requests
+# RUN pip3 install numpy
+# RUN apk add --no-cache py3-numpy
+
+RUN mkdir /tmp/opencv
+RUN cd /tmp/opencv && wget -O opencv.zip https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip
+RUN cd /tmp/opencv && unzip opencv.zip
+RUN cd /tmp/opencv && wget -O opencv_contrib.zip https://github.com/opencv/opencv_contrib/archive/${OPENCV_VERSION}.zip
+RUN cd /tmp/opencv && unzip opencv_contrib.zip
+RUN mkdir /tmp/opencv/opencv-${OPENCV_VERSION}/build && cd /tmp/opencv/opencv-${OPENCV_VERSION}/build
+RUN cd /tmp/opencv/opencv-${OPENCV_VERSION}/build && cmake \
+	-D CMAKE_BUILD_TYPE=RELEASE \
+	-D CMAKE_INSTALL_PREFIX=/usr/local \
+	-D OPENCV_EXTRA_MODULES_PATH=/tmp/opencv/opencv_contrib-${OPENCV_VERSION}/modules \
+	-D WITH_FFMPEG=YES \
+	-D INSTALL_C_EXAMPLES=NO \
+	-D INSTALL_PYTHON_EXAMPLES=NO \
+	-D BUILD_ANDROID_EXAMPLES=NO \
+	-D BUILD_DOCS=NO \
+	-D BUILD_TESTS=NO \
+	-D BUILD_PERF_TESTS=NO \
+	-D BUILD_EXAMPLES=NO \
+	# -D__STDC_VERSION__=0 \
+	-D BUILD_opencv_java=NO \
+	-D BUILD_opencv_python=YES \
+	-D BUILD_opencv_python2=NO \
+	-D BUILD_opencv_python3=YES \
+	-D BUILD_PYTHON_SUPPORT=ON \
+	-D BUILD_NEW_PYTHON_SUPPORT=ON \
+	-D PYTHON_EXECUTABLE=$(which python3) \
+	-D PYTHON_DEFAULT_EXECUTABLE=$(which python3) \
+	-D WITH_CUDA=OFF \
+	-D WITH_TBB=ON \
+	-D WITH_PTHREADS_PF=ON \
+	-D WITH_OPENNI=OFF \
+	-D WITH_OPENNI2=ON \
+	-D WITH_EIGEN=ON \
+	-D WITH_OPENCL=OFF \
+	-D USE_GStreamer=ON \
+	-D WITH_GDAL=ON \
+	-D WITH_CSTRIPES=ON \
+	-D ENABLE_FAST_MATH=1 \
+	-D WITH_OPENGL=ON \
+	-D WITH_QT=OFF \
+	-D WITH_IPP=OFF \
+	-D WITH_V4L=ON \
+	-D OPENCV_GENERATE_PKGCONFIG=YES ..
+
+RUN cd /tmp/opencv/opencv-${OPENCV_VERSION}/build && make -j2
+RUN cd /tmp/opencv/opencv-${OPENCV_VERSION}/build && make install
+# RUN rm -rf /tmp/opencv
+
+ENV PKG_CONFIG_PATH /usr/local/lib64/pkgconfig
+ENV LD_LIBRARY_PATH /usr/local/lib64
+ENV CGO_CPPFLAGS -I/usr/local/include
+ENV CGO_CXXFLAGS "--std=c++1z"
+ENV CGO_LDFLAGS "-L/usr/local/lib -lopencv_core -lopencv_face -lopencv_videoio -lopencv_imgproc -lopencv_highgui -lopencv_imgcodecs -lopencv_objdetect -lopencv_features2d -lopencv_video -lopencv_dnn -lopencv_xfeatures2d -lopencv_plot -lopencv_tracking"
+
+# Configure Go
+RUN apk add --no-cache go
+ENV GOROOT /usr/lib/go
+ENV GOPATH /go
+ENV PATH /go/bin:$PATH
+RUN mkdir -p ${GOPATH}/src ${GOPATH}/bin
+RUN go get -u -d gocv.io/x/gocv
+#RUN cd $GOPATH/src/gocv.io/x/gocv
+
+# https://marcosnietoblog.wordpress.com/2017/04/30/docker-image-with-opencv-with-x11-forwarding-for-gui/
+# https://stackoverflow.com/questions/25281992/alternatives-to-ssh-x11-forwarding-for-docker-containers#25334301
+# https://richarthurs.com/2019/01/20/raspberrypi-cv-setup/
+RUN pip3 install opencv-python
+
+#-D CMAKE_SHARED_LINKER_FLAGS=-Wl,-Bsymbolic \
+
+
+# RUN pip3 install cv2
+
+#RUN mkdir /dev/input/
+#COPY event_files.tar.gz /home/
+#RUN tar -xvf /home/event_files.tar.gz -C /dev/input/
+
+#COPY JoyStickInput.py /home/
+#ENTRYPOINT [ "python3" , "/home/JoyStickInput.py" ]
+
+
+# sudo docker run -it --entrypoint /bin/bash opencv-alpine

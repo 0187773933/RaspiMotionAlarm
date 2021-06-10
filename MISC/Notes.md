@@ -1,0 +1,1 @@
+https://linuxize.com/post/how-to-install-opencv-on-ubuntu-18-04/

@@ -1,0 +1,97 @@
+# Dockerfile
+
+FROM ubuntu:latest
+
+# You have to enable swap file
+# https://stackoverflow.com/a/47374605
+
+ENV TZ=America/New_York
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+RUN apt-get update
+RUN apt-get install -y --no-install-recommends apt-utils
+RUN apt-get install build-essential -y
+RUN apt-get install cmake -y
+RUN apt-get install git -y
+RUN apt-get install wget -y
+RUN apt-get install unzip -y
+RUN apt-get install yasm -y
+RUN apt-get install ffmpeg -y
+RUN apt-get install pkg-config -y
+RUN apt-get install libswscale-dev -y
+RUN apt-get install libtbb2 -y
+RUN apt-get install libtbb-dev -y
+RUN apt-get install libjpeg-dev -y
+RUN apt-get install libpng-dev -y
+RUN apt-get install libtiff-dev -y
+RUN apt-get install libavformat-dev -y
+RUN apt-get install libpq-dev -y
+RUN apt-get install net-tools -y
+RUN apt-get install python3-pip -y
+RUN apt-get install python3-dev -y
+RUN python3 -m pip install -U pip
+RUN python3 -m pip install numpy
+
+RUN apt-get install golang-go -y
+
+WORKDIR /
+ENV OPENCV_VERSION="4.5.0"
+RUN wget https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip
+RUN unzip ${OPENCV_VERSION}.zip
+RUN mkdir /opencv-${OPENCV_VERSION}/cmake_binary
+RUN cd /opencv-${OPENCV_VERSION}/cmake_binary && \
+cmake \
+-D OPENCV_GENERATE_PKGCONFIG=ON \
+-D PYTHON_EXECUTABLE=$(which python3) \
+-D WITH_CUDA=OFF \
+-D CMAKE_BUILD_TYPE=RELEASE \
+-D BUILD_PYTHON_SUPPORT=ON \
+-D CMAKE_INSTALL_PREFIX=/usr \
+-D INSTALL_C_EXAMPLES=ON \
+-D INSTALL_PYTHON_EXAMPLES=ON \
+-D BUILD_PYTHON_SUPPORT=ON \
+-D BUILD_NEW_PYTHON_SUPPORT=ON \
+-D PYTHON_DEFAULT_EXECUTABLE=$(which python3) \
+-D WITH_TBB=ON \
+-D WITH_PTHREADS_PF=ON \
+-D WITH_OPENNI=OFF \
+-D WITH_OPENNI2=ON \
+-D WITH_EIGEN=ON \
+-D BUILD_DOCS=ON \
+-D BUILD_TESTS=ON \
+-D BUILD_PERF_TESTS=ON \
+-D BUILD_EXAMPLES=ON \
+-D WITH_OPENCL=$OPENCL_ENABLED \
+-D USE_GStreamer=ON \
+-D WITH_GDAL=ON \
+-D WITH_CSTRIPES=ON \
+-D ENABLE_FAST_MATH=1 \
+-D WITH_OPENGL=ON \
+-D WITH_QT=OFF \
+-D WITH_IPP=OFF \
+-D WITH_FFMPEG=ON \
+-D CMAKE_SHARED_LINKER_FLAGS=-Wl,-Bsymbolic \
+-D WITH_V4L=ON .. && \
+#make -j $(nproc) && \
+make && \
+make install && \
+ldconfig
+RUN rm /${OPENCV_VERSION}.zip
+RUN rm -r /opencv-${OPENCV_VERSION}
+
+
+# RUN ln -s \
+#   /usr/local/python/cv2/python-3.8/cv2.cpython-37m-x86_64-linux-gnu.so \
+#   /usr/local/lib/python3.8/site-packages/cv2.so
+
+
+
+
+
+# Extras
+
+# sudo docker run -it --entrypoint /bin/bash opencv
+
+
+# https://github.com/denismakogon/gocv-alpine
+# https://github.com/hybridgroup/gocv

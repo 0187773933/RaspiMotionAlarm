@@ -1,0 +1,11 @@
+[Unit]
+Description=Keeps motion.py Script Running During Time Window
+
+[Service]
+Type=idle
+ExecStart=/bin/bash -l -c '/usr/local/bin/startRaspiMotionPythonScript'
+#ExecStart=/bin/bash -l -c 'su pi -c "/usr/local/bin/startRaspiMotionPythonScript"'
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
