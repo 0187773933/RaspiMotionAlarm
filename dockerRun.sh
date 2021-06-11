@@ -10,4 +10,15 @@ sudo docker run -it \
 motion-alarm
 # https://askubuntu.com/a/1324570
 #  --privileged
-#--device "/dev/vchiq:/dev/vchiq" \
+#--device "/dev/vchiq:/dev/vchiq"
+
+
+
+sudo docker rm "raspi-motion-alarm-sandbox" -f || echo "" && \
+sudo docker run -dit --restart='always' \
+--privileged \
+--name "raspi-motion-alarm-sandbox" \
+-v /tmp/.X11-unix:/tmp/.X11-unix \
+--device "/dev/video0:/dev/video0" \
+-p "9363:9363" \
+xp6qhg9fmuolztbd2ixwdbtd1/raspi-motion-alarm

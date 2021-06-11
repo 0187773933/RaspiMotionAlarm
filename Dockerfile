@@ -19,7 +19,10 @@ RUN apt-get install net-tools -y
 RUN apt-get install iproute2 -y
 RUN apt-get install iputils-ping -y
 # Programming Languages , Python Comes Pre-Packaged Now
-RUN apt-get install golang-go -y
+# RUN apt-get install golang-go -y
+# Apparently, gocv.io requires go 1.11.6
+# and 11JUN2021 , apt-get installs
+# we installed a specific version of go somewhere in a docker
 RUN apt-get install python-pip -y
 RUN apt-get install python3-pip -y
 RUN apt-get install python3-venv -y
@@ -128,12 +131,16 @@ RUN cmake \
 -D WITH_QT=OFF \
 -D WITH_IPP=OFF \
 -D WITH_FFMPEG=ON \
+-D WITH_PROTOBUF=ON \
+-D BUILD_PROTOBUF=ON \
 -D CMAKE_SHARED_LINKER_FLAGS=-Wl,-Bsymbolic \
 -D WITH_V4L=ON ..
+# -D WITH_NGRAPH=ON \
 #make -j $(nproc) && \
 RUN make
 RUN sudo make install
 RUN sudo ldconfig
+RUN sudo chown $USERNAME:video /dev/video0
 # # RUN rm /${OPENCV_VERSION}.zip
 # # RUN rm -r /opencv-${OPENCV_VERSION}
 

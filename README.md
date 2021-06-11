@@ -44,6 +44,63 @@ pip install opencv-python --no-cache-dir
 pip install requests imutils redis
 
 
-
 ### https://www.instructables.com/Build-Docker-Image-for-Raspberry-Pi/
 ### https://www.docker.com/blog/multi-arch-images/
+
+
+https://github.com/duo-labs/webauthn
+
+
+mkdir gobuild && cd gobuild && wget https://golang.org/dl/go1.16.5.linux-armv6l.tar.gz && \
+tar -xf go1.16.5.linux-armv6l.tar.gz && cd ..
+
+go run main.go
+sudo nano +2009 ~/go/pkg/mod/gocv.io/x/gocv\@v0.25.0/core.go
+https://github.com/mattn/go-sqlite3/commit/09259a5557fed04432cc35a10dd3b300ebc119e9
+
+
+
+
+sudo docker exec -it 0d6efb14a349 bash
+
+
+
+wget https://storage.googleapis.com/tfhub-lite-models/google/lite-model/movenet/singlepose/lightning/3.tflite
+model_bytes , _ := ioutil.ReadFile( "/home/morphs/GoVersion/3.tflite"  )
+//net := gocv.ReadNet( "/home/morphs/GoVersion/saved_model.pb" , "" )
+net , _ := gocv.ReadNetFromTensorflowBytes( model_bytes )
+if net.Empty() {
+        fmt.Printf("Error reading network model : %v\n", "file")
+        return
+}
+defer net.Close()
+
+https://github.com/hybridgroup/gocv/blob/9d5242045ea703b26a3b7295ba5e2a627a44dbd2/core.cpp#L830
+terminate called after throwing an instance of 'cv::Exception'
+  what():  OpenCV(4.5.0) /home/morphs/opencv/opencv-4.5.0/modules/dnn/src/tensorflow/tf_io.cpp:48:
+    error: (-2:Unspecified error) FAILED: ReadProtoFromBinaryBuffer(data, len, param).
+        Failed to parse GraphDef buffer in function 'ReadTFNetParamsFromBinaryBufferOrDie'
+nano +48 /home/morphs/opencv/opencv-4.5.0/modules/dnn/src/tensorflow/tf_io.cpp
+
+
+https://github.com/opencv/opencv/blob/master/modules/dnn/src/caffe/caffe_io.cpp
+
+nano +1150 /home/morphs/opencv/opencv-4.5.0/modules/dnn/src/caffe/caffe_io.cpp
+nano +1112 /home/morphs/opencv/opencv-4.5.0/modules/dnn/src/caffe/caffe_io.cpp
+
+
+https://github.com/tensorflow/tensorflow/issues/1890#issuecomment-209471861
+
+
+https://docs.opencv.org/master/
+https://docs.opencv.org/master/db/d05/tutorial_config_reference.html
+
+
+https://awesomeopensource.com/project/DrewNF/Build-Deep-Learning-Env-with-Tensorflow-Python-OpenCV?categorypage=18
+
+https://docs.opencv.org/master/dc/db4/tf_segm_tutorial_dnn_conversion.html
+
+python
+
+https://gist.github.com/kleysonr/63401193c6ead95c7c2fd2101f878362
+https://www.datamachines.io/blog/toward-a-containerized-nvidia-cuda-tensorflow-and-opencv
