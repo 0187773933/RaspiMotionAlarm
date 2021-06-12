@@ -104,3 +104,6 @@ python
 
 https://gist.github.com/kleysonr/63401193c6ead95c7c2fd2101f878362
 https://www.datamachines.io/blog/toward-a-containerized-nvidia-cuda-tensorflow-and-opencv
+
+
+https://gist.github.com/n3wtron/4624820

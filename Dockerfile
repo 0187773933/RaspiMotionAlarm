@@ -23,6 +23,14 @@ RUN apt-get install iputils-ping -y
 # Apparently, gocv.io requires go 1.11.6
 # and 11JUN2021 , apt-get installs
 # we installed a specific version of go somewhere in a docker
+# https://golang.org/dl/
+COPY ./go_install.sh /home/$USERNAME/go_install.sh
+RUN sudo chmod +x /home/$USERNAME/go_install.sh
+RUN sudo chown $USERNAME:$USERNAME /home/$USERNAME/go_install.sh
+RUN /home/$USERNAME/go_install.sh
+# base64Encode 'export GO_TAR_KILOBYTES=$(printf "%.3f\n" $(echo "$(stat --format="%s" /home/morphs/go.tar.gz) / 1000" | bc -l)) && echo Extracting [$TAR_CHECKPOINT] of $GO_TAR_KILOBYTES kilobytes /usr/local/go'
+RUN sudo tar --checkpoint=100 --checkpoint-action=exec='/bin/bash -c "cmd=$(echo ZXhwb3J0IEdPX1RBUl9LSUxPQllURVM9JChwcmludGYgIiUuM2ZcbiIgJChlY2hvICIkKHN0YXQgLS1mb3JtYXQ9IiVzIiAvaG9tZS9tb3JwaHMvZ28udGFyLmd6KSAvIDEwMDAiIHwgYmMgLWwpKSAmJiBlY2hvIEV4dHJhY3RpbmcgWyRUQVJfQ0hFQ0tQT0lOVF0gb2YgJEdPX1RBUl9LSUxPQllURVMga2lsb2J5dGVzIC91c3IvbG9jYWwvZ28= | base64 -d ; echo); eval $cmd"' -C /usr/local -xzf /home/$USERNAME/go.tar.gz
+
 RUN apt-get install python-pip -y
 RUN apt-get install python3-pip -y
 RUN apt-get install python3-venv -y
@@ -84,23 +92,25 @@ RUN echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 USER $USERNAME
 WORKDIR /home/$USERNAME
-COPY ./PythonVersion /home/$USERNAME/PythonVersion
-COPY ./GoVersion /home/$USERNAME/GoVersion
-RUN sudo chown -R $USERNAME:$USERNAME /home/$USERNAME/PythonVersion
-RUN sudo chown -R $USERNAME:$USERNAME /home/$USERNAME/GoVersion
+RUN mkdir -p /home/$USERNAME/SHARING
+RUN sudo chown -R $USERNAME:$USERNAME /home/$USERNAME/SHARING
+COPY ./PythonVersion /home/$USERNAME/SHARING/PythonVersion
+COPY ./GoVersion /home/$USERNAME/SHARING/GoVersion
+RUN sudo chown -R $USERNAME:$USERNAME /home/$USERNAME/SHARING/PythonVersion
+RUN sudo chown -R $USERNAME:$USERNAME /home/$USERNAME/SHARING/GoVersion
 RUN python3 -m pip install requests
 RUN python3 -m pip install imutils
 RUN python3 -m pip install redis
 
 # Build OpenCV for GoVersion
-RUN mkdir -p /home/$USERNAME/opencv/
-WORKDIR /home/$USERNAME/opencv/
+RUN mkdir -p /home/$USERNAME/SHARING/opencv/
+WORKDIR /home/$USERNAME/SHARING/opencv/
 ENV OPENCV_VERSION="4.5.0"
 RUN wget https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip
 RUN unzip ${OPENCV_VERSION}.zip
-WORKDIR /home/$USERNAME/opencv/opencv-$OPENCV_VERSION
-RUN mkdir -p /home/$USERNAME/opencv/opencv-$OPENCV_VERSION/cmake_binary
-WORKDIR /home/$USERNAME/opencv/opencv-$OPENCV_VERSION/cmake_binary
+WORKDIR /home/$USERNAME/SHARING/opencv/opencv-$OPENCV_VERSION
+RUN mkdir -p /home/$USERNAME/SHARING/opencv/opencv-$OPENCV_VERSION/cmake_binary
+WORKDIR /home/$USERNAME/SHARING/opencv/opencv-$OPENCV_VERSION/cmake_binary
 RUN cmake \
 -D OPENCV_GENERATE_PKGCONFIG=ON \
 -D PYTHON_EXECUTABLE=$(which python3) \
@@ -141,6 +151,9 @@ RUN make
 RUN sudo make install
 RUN sudo ldconfig
 RUN sudo chown $USERNAME:video /dev/video0
+
+WORKDIR /home/$USERNAME
+
 # # RUN rm /${OPENCV_VERSION}.zip
 # # RUN rm -r /opencv-${OPENCV_VERSION}
 

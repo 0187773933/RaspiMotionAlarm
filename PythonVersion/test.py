@@ -9,15 +9,16 @@ import json
 import redis
 import base64
 import time
+
+import utils
+utils.test()
+
 # from datetime import datetime , timedelta , time
 #from time import localtime, strftime , sleep
 # from pytz import timezone
 # eastern_tz = timezone( "US/Eastern" )
-
 # from twilio.rest import Client
 
-import utils
-utils.test()
 w_Capture = False
 def signal_handler( signal , frame ):
 	global w_Capture

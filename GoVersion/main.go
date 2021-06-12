@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"time"
 	"net/http"
@@ -71,8 +70,9 @@ func main() {
 	// start http server
 	// https://medium.com/better-programming/hands-on-with-jwt-in-golang-8c986d1bb4c0
 	// http://localhost:9363/frame.jpeg
-	//http.Handle( "/frame.jpeg" , stream )
-	authenticator := auth.NewBasicAuthenticator( "localhost" , Secret )
-	http.HandleFunc( "/frame.jpeg" , authenticator.Wrap( handle ) )
+	http.Handle( "/frame.jpeg" , stream )
+	//authenticator := auth.NewBasicAuthenticator( "localhost" , Secret )
+	//http.HandleFunc( "/frame.jpeg" , authenticator.Wrap( handle ) )
+	//http.HandleFunc( "/frame.jpeg" , handle  )
 	log.Fatal( http.ListenAndServe( "0.0.0.0:9363" , nil ) )
 }

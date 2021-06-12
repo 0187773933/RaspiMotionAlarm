@@ -12,13 +12,16 @@ motion-alarm
 #  --privileged
 #--device "/dev/vchiq:/dev/vchiq"
 
-
+# https://www.docker.com/blog/multi-arch-build-and-images-the-simple-way/
+# https://github.com/docker/buildx
+# https://github.com/BretFisher/multi-platform-docker-build
+# https://www.docker.com/blog/multi-platform-docker-builds/
 
 sudo docker rm "raspi-motion-alarm-sandbox" -f || echo "" && \
-sudo docker run -dit --restart='always' \
---privileged \
+sudo docker run -dit --restart='always' --privileged \
 --name "raspi-motion-alarm-sandbox" \
 -v /tmp/.X11-unix:/tmp/.X11-unix \
+-v "${pwd}/SHARING:/home/morphs/SHARING" \
 --device "/dev/video0:/dev/video0" \
 -p "9363:9363" \
 xp6qhg9fmuolztbd2ixwdbtd1/raspi-motion-alarm

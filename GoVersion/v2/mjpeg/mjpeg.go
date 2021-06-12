@@ -78,4 +78,4 @@ func NewStream() *Stream {
 			Frame:         make([]byte, len(headerf)),
 			FrameInterval: 50 * time.Millisecond,
 	}
-}
+}morphs@0
