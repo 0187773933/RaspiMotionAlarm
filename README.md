@@ -107,3 +107,56 @@ https://www.datamachines.io/blog/toward-a-containerized-nvidia-cuda-tensorflow-a
 
 
 https://gist.github.com/n3wtron/4624820
+
+
+```bash
+sudo apt-get install -y gcc nano tar bash sudo openssl git make cmake gfortran pkg-config wget curl unzip net-tools iproute2 iputils-ping python3-pip python3-venv build-essential python3-dev python3-setuptools python3-smbus python3-numpy python3-scipy libncursesw5-dev libgdbm-dev libc6-dev zlib1g-dev libsqlite3-dev tk-dev libssl-dev openssl libffi-dev libsm6 libxrender1 libfontconfig1 libopencv-dev python3-opencv yasm ffmpeg libswscale-dev libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libavformat-dev libpq-dev libxvidcore-dev libx264-dev libavcodec-dev libv4l-dev libgtk-3-dev libdc1394-22-dev libjpeg62 libopenjp2-7 libilmbase-dev libatlas-base-dev libgstreamer1.0-dev openexr libopenexr-dev
+
+
+sudo dd if=/dev/zero of=/swapfile bs=64M count=16
+sudo mkswap /swapfile
+sudo chmod 600 /swapfile
+sudo swapon /swapfile
+
+cmake \
+-D OPENCV_GENERATE_PKGCONFIG=ON \
+-D PYTHON_EXECUTABLE=$(which python3) \
+-D WITH_CUDA=OFF \
+-D CMAKE_BUILD_TYPE=RELEASE \
+-D BUILD_PYTHON_SUPPORT=ON \
+-D CMAKE_INSTALL_PREFIX=/usr \
+-D INSTALL_C_EXAMPLES=ON \
+-D INSTALL_PYTHON_EXAMPLES=ON \
+-D BUILD_PYTHON_SUPPORT=ON \
+-D BUILD_NEW_PYTHON_SUPPORT=ON \
+-D PYTHON_DEFAULT_EXECUTABLE=$(which python3) \
+-D WITH_TBB=ON \
+-D WITH_PTHREADS_PF=ON \
+-D WITH_OPENNI=OFF \
+-D WITH_OPENNI2=ON \
+-D WITH_EIGEN=ON \
+-D BUILD_DOCS=ON \
+-D BUILD_TESTS=ON \
+-D BUILD_PERF_TESTS=ON \
+-D BUILD_EXAMPLES=ON \
+-D WITH_OPENCL=oFF \
+-D USE_GStreamer=ON \
+-D WITH_GDAL=ON \
+-D WITH_CSTRIPES=ON \
+-D ENABLE_FAST_MATH=1 \
+-D WITH_OPENGL=ON \
+-D WITH_QT=OFF \
+-D WITH_IPP=OFF \
+-D WITH_FFMPEG=ON \
+-D WITH_PROTOBUF=ON \
+-D BUILD_PROTOBUF=ON \
+-D CMAKE_SHARED_LINKER_FLAGS=-Wl,-Bsymbolic \
+-D WITH_V4L=ON ..
+
+n=$(nproc) && ((c=$n-1)) && make -j $c
+sudo make install
+sudo ldconfig
+sudo chown morphs:video /dev/video0
+sudo swapoff /swapfile
+sudo rm /swapfile
+```

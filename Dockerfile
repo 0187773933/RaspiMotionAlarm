@@ -146,8 +146,8 @@ RUN cmake \
 -D CMAKE_SHARED_LINKER_FLAGS=-Wl,-Bsymbolic \
 -D WITH_V4L=ON ..
 # -D WITH_NGRAPH=ON \
-#make -j $(nproc) && \
-RUN make
+# RUN make
+RUN n=$(nproc) && ((c=$n-1)) && make -j $c
 RUN sudo make install
 RUN sudo ldconfig
 RUN sudo chown $USERNAME:video /dev/video0
