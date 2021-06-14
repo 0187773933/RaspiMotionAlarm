@@ -160,3 +160,8 @@ sudo chown morphs:video /dev/video0
 sudo swapoff /swapfile
 sudo rm /swapfile
 ```
+
+
+
+## Wifi Setup
+https://raspberrypi.stackexchange.com/a/98636
