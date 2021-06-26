@@ -110,13 +110,25 @@ https://gist.github.com/n3wtron/4624820
 
 
 ```bash
-sudo apt-get install -y gcc nano tar bash sudo openssl git make cmake gfortran pkg-config wget curl unzip net-tools iproute2 iputils-ping python3-pip python3-venv build-essential python3-dev python3-setuptools python3-smbus python3-numpy python3-scipy libncursesw5-dev libgdbm-dev libc6-dev zlib1g-dev libsqlite3-dev tk-dev libssl-dev openssl libffi-dev libsm6 libxrender1 libfontconfig1 libopencv-dev python3-opencv yasm ffmpeg libswscale-dev libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libavformat-dev libpq-dev libxvidcore-dev libx264-dev libavcodec-dev libv4l-dev libgtk-3-dev libdc1394-22-dev libjpeg62 libopenjp2-7 libilmbase-dev libatlas-base-dev libgstreamer1.0-dev openexr libopenexr-dev
+sudo apt-get install -y gcc nano tar bash sudo openssl git make cmake gfortran pkg-config wget curl unzip net-tools iproute2 iputils-ping python3-pip python3-venv build-essential python3-dev python3-setuptools python3-smbus python3-numpy python3-scipy
 
+sudo apt-get install -y libncursesw5-dev libgdbm-dev libc6-dev zlib1g-dev libsqlite3-dev tk-dev libssl-dev openssl libffi-dev libsm6 libxrender1 libfontconfig1 yasm ffmpeg libswscale-dev libtbb2 libtbb-dev  libpng-dev libavformat-dev libpq-dev libxvidcore-dev libx264-dev libavcodec-dev libv4l-dev libgtk-3-dev libdc1394-22-dev libopenjp2-7 libilmbase-dev libatlas-base-dev libgstreamer1.0-dev openexr libopenexr-dev libgdk-pixbuf2.0-dev libgdk-pixbuf2.0-bin
+
+libjpeg-dev libopencv-dev python3-opencv libtiff-dev libjpeg62
 
 sudo dd if=/dev/zero of=/swapfile bs=64M count=16
 sudo mkswap /swapfile
 sudo chmod 600 /swapfile
 sudo swapon /swapfile
+
+RUN mkdir -p /home/$USERNAME/SHARING/opencv/
+WORKDIR /home/$USERNAME/SHARING/opencv/
+ENV OPENCV_VERSION="4.5.0"
+RUN wget https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip
+RUN unzip ${OPENCV_VERSION}.zip
+WORKDIR /home/$USERNAME/SHARING/opencv/opencv-$OPENCV_VERSION
+RUN mkdir -p /home/$USERNAME/SHARING/opencv/opencv-$OPENCV_VERSION/cmake_binary
+WORKDIR /home/$USERNAME/SHARING/opencv/opencv-$OPENCV_VERSION/cmake_binary
 
 cmake \
 -D OPENCV_GENERATE_PKGCONFIG=ON \

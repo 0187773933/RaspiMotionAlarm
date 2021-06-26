@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import numpy as np
 import cv2
 import requests
@@ -19,32 +20,39 @@ utils.test()
 # eastern_tz = timezone( "US/Eastern" )
 # from twilio.rest import Client
 
-w_Capture = False
-def signal_handler( signal , frame ):
-	global w_Capture
-	message_string = "main.py closed , Signal = " + str( signal )
-	print( message_string )
-	w_Capture.release()
-	cv2.destroyAllWindows()
-	sys.exit( 1 )
+class PiCamera:
+	def __init__( self , options={} ):
+		self.capture = None
+		if "device_id" not in options:
+			options["device_id"] = 0
+		self.device_id = options["device_id"]
+		signal.signal( signal.SIGABRT , self.signal_handler )
+		signal.signal( signal.SIGFPE , self.signal_handler )
+		signal.signal( signal.SIGILL , self.signal_handler )
+		signal.signal( signal.SIGSEGV , self.signal_handler )
+		signal.signal( signal.SIGTERM , self.signal_handler )
+		signal.signal( signal.SIGINT , self.signal_handler )
+	def signal_handler( self , signal , frame ):
+		print( f"\nmain.py closed , Signal = {str(signal)}" )
+		self.capture.release()
+		cv2.destroyAllWindows()
+		sys.exit( 1 )
+	def open( self , callback ):
+		self.capture = cv2.VideoCapture( self.device_id )
+		while( self.capture.isOpened() ):
+			( grabbed , frame ) = self.capture.read()
+			if not grabbed:
+				print( "can't connect to pi camera" )
+				time.sleep( 1 )
+				break
+			else:
+				callback()
 
-signal.signal( signal.SIGABRT , signal_handler )
-signal.signal( signal.SIGFPE , signal_handler )
-signal.signal( signal.SIGILL , signal_handler )
-signal.signal( signal.SIGSEGV , signal_handler )
-signal.signal( signal.SIGTERM , signal_handler )
-signal.signal( signal.SIGINT , signal_handler )
-
-w_Capture = cv2.VideoCapture( 0 )
-while( w_Capture.isOpened() ):
-	print( "open" )
-	( grabbed , frame ) = w_Capture.read()
-	if not grabbed:
-		print( "can't connect to pi camera" )
-		time.sleep( 1 )
-		break
+def test_callback():
+	print( "here in the callback" )
 	time.sleep( 1 )
 
-
-w_Capture.release()
-cv2.destroyAllWindows()
+if __name__ == "__main__":
+	camera = PiCamera()
+	print( camera )
+	camera.open( test_callback )
