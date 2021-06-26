@@ -1,26 +1,61 @@
+import os
+import json
+from pathlib import Path
+import binascii
+import datetime
 import logging
 from logging.handlers import RotatingFileHandler
-import datetime
-import os
-import binascii
+
+import redis
+import redis_circular_list
+
+def write_json( file_path , python_object ):
+	with open( file_path , 'w', encoding='utf-8' ) as f:
+		json.dump( python_object , f , ensure_ascii=False , indent=4 )
+
+def read_json( file_path ):
+	with open( file_path ) as f:
+		return json.load( f )
 
 logging.basicConfig(
-	filename = f"./LOGS/{datetime.date.today().strftime('%d%^b%Y')}-RUNID-{binascii.b2a_hex(os.urandom(5)).decode('utf-8')}.log" ,
+	filename = f"./LOGS/{datetime.date.today().strftime('%d%^b%Y')}-RUNID-{binascii.b2a_hex(os.urandom(5)).decode('utf-8')}.txt" ,
 	level = logging.DEBUG ,
 	filemode = "w" ,
-	# format = " %(asctime)s: (%(filename)s): %(levelname)s: %(funcName)s Line: %(lineno)d - %(message)s" ,
 	format = "%(asctime)s: === %(message)s" ,
 	datefmt = "%d%^b%Y %H:%M:%S" ,
 )
-# GLOBAL_LOGGER = logging.getLogger( "global_logger" )
-# handler = RotatingFileHandler( "custom_log_output.log" , maxBytes=2000 , backupCount=10 )
-# GLOBAL_LOGGER.addHandler( handler )
-
 def LogGlobal( message ):
-	# global GLOBAL_LOGGER
-	# GLOBAL_LOGGER.debug( message )
 	logging.debug( message )
+	redis_log_global( message )
 	print( message )
 
-def test():
-	print( "here" )
+# RUNTIME Global Variables
+CONFIG_FILE_PATH = None
+REDIS_CONNECTION = None
+CONFIG = None
+
+def Init():
+	global CONFIG_FILE_PATH
+	global REDIS_CONNECTION
+	global CONFIG
+	CONFIG_FILE_PATH = Path.home().joinpath( ".config" , "personal" , "motion_alarm.json" )
+	if CONFIG_FILE_PATH.is_file() == False:
+		LogGlobal( "~./config/personal/motion_alarm.json not found" )
+		sys.exit( 1 )
+	CONFIG = read_json( CONFIG_FILE_PATH )
+	redis_reconnect()
+
+def redis_reconnect():
+	global REDIS_CONNECTION
+	global CONFIG
+	REDIS_CONNECTION = redis.StrictRedis(
+		host=CONFIG["redis"]["host"] ,
+		port=CONFIG["redis"]["port"] ,
+		db=CONFIG["redis"]["database_number"] ,
+		password=CONFIG["redis"]["password"] ,
+		decode_responses=True ,
+		)
+	LogGlobal( REDIS_CONNECTION )
+
+def redis_log_global( message ):
+	print( f"emulation of redis_log_global( {message} )" )
