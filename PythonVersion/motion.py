@@ -13,7 +13,8 @@ import utils
 
 
 class New():
-	def __init__( self ):
+	def __init__( self , options ):
+		self.options = options
 		self.opencv_config = utils.CONFIG["opencv"]
 		self.config = utils.CONFIG["programs"]["motion"]
 		self.average = None
@@ -22,6 +23,7 @@ class New():
 		self.grey = None
 		self.delta = None
 		self.threshold = None
+		self.movement_detected = False
 
 	def resize_frame( self , frame ):
 		frame = imutils.resize( frame , width=self.opencv_config["frame"]["width"] )
@@ -47,22 +49,21 @@ class New():
 
 	def search_for_movement( self ):
 		( contours , _ ) = cv2.findContours( self.threshold.copy() , cv2.RETR_EXTERNAL , cv2.CHAIN_APPROX_SIMPLE )
+		motion_frames = 0
 		for contour in contours:
-			if cv2.contourArea( contour ) < self.config["min_area"]:
-				self.motion_counter = 0
-			self.motion_counter += 1
-		print( self.motion_counter )
+			if cv2.contourArea( contour ) > self.config["min_area"]:
+				motion_frames += 1
+		print( motion_frames )
+		if motion_frames > self.config["min_motion_frames"]:
+			self.options["on_motion_frame"]( self.frame )
 
 	def OnCameraTick( self , grabbed , frame ):
 		try:
 			self.resize_frame( frame )
-
 			self.get_greyscale()
 			self.get_delta()
 			self.get_threshold()
 			self.search_for_movement()
-
-			# print( self.frame )
-			time.sleep( 1 )
+			# time.sleep( .3 )
 		except Exception as e:
 			print( e )
