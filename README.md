@@ -177,3 +177,7 @@ sudo rm /swapfile
 
 ## Wifi Setup
 https://raspberrypi.stackexchange.com/a/98636
+
+
+
+sudo usermod -a -G video morphs

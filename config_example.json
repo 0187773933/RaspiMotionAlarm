@@ -1,0 +1,21 @@
+{
+	"redis": {
+		"database_number": 1 ,
+		"host": "11.22.33.44" ,
+		"port": "9003" ,
+		"password": "asdfasdfasdfasdf" ,
+		"keys": {
+			"prefix": "RPMA." ,
+			"log": {
+				"global": "LOG.GLOBAL."
+			}
+		}
+	} ,
+	"twilio": {
+		"sid": "asdfasdfasdfasdf" ,
+		"auth_token": "asdfasdfasdfasdf"
+	} ,
+	"misc": {
+		"time_zone": "US/Eastern"
+	}
+}

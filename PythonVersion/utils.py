@@ -7,7 +7,10 @@ import logging
 from logging.handlers import RotatingFileHandler
 
 import redis
-import redis_circular_list
+# import redis_circular_list
+# https://github.com/48723247842/RedisCirclularList/blob/master/redis_circular_list/__init__.py
+# next_in_circular_list = redis_circular_list.next( redis_connection , "LIST_KEY" )
+# previous_in_circular_list = redis_circular_list.previous( redis_connection , "LIST_KEY" )
 
 def write_json( file_path , python_object ):
 	with open( file_path , 'w', encoding='utf-8' ) as f:
@@ -53,9 +56,14 @@ def redis_reconnect():
 		port=CONFIG["redis"]["port"] ,
 		db=CONFIG["redis"]["database_number"] ,
 		password=CONFIG["redis"]["password"] ,
-		decode_responses=True ,
+		# decode_responses=True ,
 		)
 	LogGlobal( REDIS_CONNECTION )
 
+allowed_types = [ "list" , "dict" , "int" , "str" ]
 def redis_log_global( message ):
-	print( f"emulation of redis_log_global( {message} )" )
+	global allowed_types
+	message_type = type( message ).__name__
+	if message_type not in allowed_types:
+		message = str( message )
+	REDIS_CONNECTION.rpush( f'{CONFIG["redis"]["keys"]["prefix"]}{CONFIG["redis"]["keys"]["log"]["global"]}' , message )

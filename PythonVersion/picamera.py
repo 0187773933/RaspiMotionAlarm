@@ -8,9 +8,10 @@ import utils
 class New:
 	def __init__( self , options={} ):
 		self.capture = None
-		if "device_id" not in options:
-			options["device_id"] = 0
-		self.device_id = options["device_id"]
+		# if "device_id" not in options:
+		# 	options["device_id"] = 0
+		# self.device_id = options["device_id"]
+		self.max_device_id_search = 20
 		signal.signal( signal.SIGABRT , self.signal_handler )
 		signal.signal( signal.SIGFPE , self.signal_handler )
 		signal.signal( signal.SIGILL , self.signal_handler )
@@ -22,8 +23,17 @@ class New:
 		self.capture.release()
 		cv2.destroyAllWindows()
 		sys.exit( 1 )
+	def find_device( self ):
+		for i in range( -1 , self.max_device_id_search ):
+			try:
+				print( f"trying id === {i}" )
+				self.capture = cv2.VideoCapture( i )
+				print( f"found device on id === {i}" )
+				return True
+			except Exception as e:
+				continue
 	def open( self , callback ):
-		self.capture = cv2.VideoCapture( self.device_id )
+		self.find_device()
 		while( self.capture.isOpened() ):
 			( grabbed , frame ) = self.capture.read()
 			if not grabbed:

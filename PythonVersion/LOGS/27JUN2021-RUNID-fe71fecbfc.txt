@@ -1,0 +1,30 @@
+27JUN2021 08:33:52: === Redis<ConnectionPool<Connection<host=45.77.156.253,port=6464,db=1>>>
+27JUN2021 08:33:52: === <picamera.New object at 0xa82706a0>
+27JUN2021 08:33:52: === here in the callback
+27JUN2021 08:33:53: === here in the callback
+27JUN2021 08:33:54: === here in the callback
+27JUN2021 08:33:55: === here in the callback
+27JUN2021 08:33:56: === here in the callback
+27JUN2021 08:33:57: === here in the callback
+27JUN2021 08:33:58: === here in the callback
+27JUN2021 08:34:00: === here in the callback
+27JUN2021 08:34:01: === here in the callback
+27JUN2021 08:34:02: === here in the callback
+27JUN2021 08:34:03: === here in the callback
+27JUN2021 08:34:04: === here in the callback
+27JUN2021 08:34:05: === here in the callback
+27JUN2021 08:34:06: === here in the callback
+27JUN2021 08:34:07: === here in the callback
+27JUN2021 08:34:08: === here in the callback
+27JUN2021 08:34:09: === here in the callback
+27JUN2021 08:34:10: === here in the callback
+27JUN2021 08:34:11: === here in the callback
+27JUN2021 08:34:12: === here in the callback
+27JUN2021 08:34:13: === here in the callback
+27JUN2021 08:34:14: === here in the callback
+27JUN2021 08:34:15: === here in the callback
+27JUN2021 08:34:16: === here in the callback
+27JUN2021 08:34:17: === here in the callback
+27JUN2021 08:34:18: === here in the callback
+27JUN2021 08:34:19: === here in the callback
+27JUN2021 08:34:20: === main.py closed , Signal = 2
