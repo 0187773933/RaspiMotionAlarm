@@ -12,4 +12,5 @@ if __name__ == "__main__":
 	utils.Init()
 	camera = picamera.New()
 	utils.LogGlobal( camera )
-	camera.open( motion.OnCameraTick )
+	motion_detector = motion.New()
+	camera.open( motion_detector.OnCameraTick )

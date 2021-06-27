@@ -8,6 +8,9 @@
 			"prefix": "RPMA." ,
 			"log": {
 				"global": "LOG.GLOBAL."
+			} ,
+			"motion_events": {
+				""
 			}
 		}
 	} ,
@@ -15,7 +18,28 @@
 		"sid": "asdfasdfasdfasdf" ,
 		"auth_token": "asdfasdfasdfasdf"
 	} ,
+	"opencv": {
+		"frame": {
+			"width": 500 ,
+			"height": 500 ,
+			"clipping": {
+				"x": { "1": 0 , "2": 500 } ,
+				"y": { "1": 0 , "2": 500 }
+			}
+		}
+	} ,
+	"programs": {
+		"motion": {
+			"min_area": 500 ,
+			"delta_threshold": 5 ,
+			"min_motion_seconds": 1 ,
+			"min_motion_frames": 2 ,
+			"motion_events_acceptable": 45 ,
+			"max_time_acceptable_stage_2": 90
+		}
+	} ,
 	"misc": {
-		"time_zone": "US/Eastern"
+		"time_zone": "US/Eastern" ,
+		"now_time_string": "%Y.%m.%d"
 	}
 }

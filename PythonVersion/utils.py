@@ -31,11 +31,12 @@ def read_json( file_path ):
 		return json.load( f )
 
 logging.basicConfig(
-	filename = f"./LOGS/{datetime.date.today().strftime('%d%^b%Y')}-RUNID-{binascii.b2a_hex(os.urandom(5)).decode('utf-8')}.txt" ,
+	filename = f"./LOGS/{datetime.date.today().strftime('%d%^b%Y')}-{binascii.b2a_hex(os.urandom(5)).decode('utf-8')}.txt" ,
 	level = logging.DEBUG ,
 	filemode = "w" ,
-	format = "%(asctime)s: === %(message)s" ,
-	datefmt = "%d%^b%Y %H:%M:%S" ,
+	# format = "%(asctime)s: === %(message)s" ,
+	format = "%(message)s" ,
+	# datefmt = "%d%^b%Y %H:%M:%S" ,
 )
 def LogGlobal( message ):
 	global ALLOWED_TYPES
@@ -82,10 +83,6 @@ def now_time_string():
 def redis_log_global( message ):
 	global CONFIG
 	global REDIS_CONNECTION
-	# global ALLOWED_TYPES
-	# message_type = type( message ).__name__
-	# if message_type not in ALLOWED_TYPES:
-	# 	message = str( message )
 	now = datetime.datetime.now( timezone( CONFIG["misc"]["time_zone"] ) )
 	day = now.strftime( "%d" )
 	month = now.strftime( "%^b" )
