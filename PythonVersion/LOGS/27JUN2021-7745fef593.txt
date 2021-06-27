@@ -1,2 +1,3 @@
 27JUN2021 === 06:43:29.905 === Redis<ConnectionPool<Connection<host=45.77.156.253,port=6464,db=1>>>
 27JUN2021 === 06:43:30.51 === <picamera.New object at 0xa814cef8>
+27JUN2021 === 06:45:01.940 === main.py closed , Signal = 2

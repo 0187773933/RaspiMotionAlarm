@@ -3,16 +3,13 @@ import time
 import utils
 import picamera
 import motion
-
-def OnMotionFrame( frame ):
-	print( "here in on motion frame callback" )
-	print( frame )
+import pose
 
 if __name__ == "__main__":
 	utils.Init()
 	camera = picamera.New()
 	utils.LogGlobal( camera )
 	motion_detector = motion.New({
-		"on_motion_frame": OnMotionFrame
+		"on_motion_frame": pose.OnMotionFrame
 	})
 	camera.open( motion_detector.OnCameraTick )
