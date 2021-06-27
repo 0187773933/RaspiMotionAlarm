@@ -1,0 +1,2 @@
+27JUN2021 09:27:47: === 2021.06.27 === 05:27:47.%000f === Redis<ConnectionPool<Connection<host=45.77.156.253,port=6464,db=1>>>
+27JUN2021 09:27:47: === 2021.06.27 === 05:27:47.%000f === <picamera.New object at 0xa81f2148>

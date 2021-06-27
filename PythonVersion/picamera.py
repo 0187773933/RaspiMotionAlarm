@@ -41,4 +41,4 @@ class New:
 				time.sleep( 1 )
 				break
 			else:
-				callback()
+				callback( grabbed , frame )
